@@ -11,11 +11,19 @@ public class BirdScript : MonoBehaviour
     public GameObject startText;
     public GameObject bullet;
     public float x;
+    public float rotationSpeed;
+    public const float maxAngle = 25;
+    public float goDownAccel;
+    private float prevPosition;
+    private float curAngle;
+    private bool isUp;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicScript>();
+        prevPosition = transform.position.y;
+        isBirdJump = false;
     }
 
     // Update is called once per frame
@@ -25,7 +33,7 @@ public class BirdScript : MonoBehaviour
         {
             isBirdJump = true;
             startText.SetActive(false);
-
+            myRigidbody.SetRotation(10);
             myRigidbody.linearVelocity = Vector2.up * flapStrength;
         }
         if (Input.GetKeyDown(KeyCode.Escape) && birdIsAlive)
@@ -38,6 +46,42 @@ public class BirdScript : MonoBehaviour
             Instantiate(bullet, new Vector3(transform.position.x + 2.5f, transform.position.y, 0), transform.rotation);
         }
 
+        float curPosition = transform.position.y;
+        float diff = curPosition - prevPosition;
+
+        switch (diff)
+        {
+            case > 0:
+                isUp = true;
+                break;
+            case < 0:
+                isUp = false;
+                break;
+            default:
+                break;
+        }
+
+        curAngle = myRigidbody.rotation;
+
+        switch (isUp, curAngle)
+        {
+            case (true, <= maxAngle):
+                myRigidbody.angularVelocity = rotationSpeed;
+                break;
+            case (false, >= -maxAngle):
+                myRigidbody.angularVelocity = -rotationSpeed * goDownAccel;
+                break;
+            case (true, >= maxAngle):
+                myRigidbody.angularVelocity = 0;
+                break;
+            case (false, <= -maxAngle - 15 and <0):
+                myRigidbody.angularVelocity = 0;
+                break;
+            default:
+                break;
+        }
+
+        prevPosition = curPosition;
 
     }
 

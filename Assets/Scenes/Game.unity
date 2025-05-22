@@ -1484,6 +1484,8 @@ MonoBehaviour:
   startText: {fileID: 400640580}
   bullet: {fileID: 699726344987607074, guid: 3b33673279571504ea3167b206d53815, type: 3}
   x: 0
+  rotationSpeed: 25
+  goDownAccel: 1.7
 --- !u!58 &571756122
 CircleCollider2D:
   m_ObjectHideFlags: 0
